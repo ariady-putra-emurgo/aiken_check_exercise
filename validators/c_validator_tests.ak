@@ -1,13 +1,17 @@
-use aiken/builtin
-use cardano/address.{VerificationKey}
-use cardano/transaction.{OutputReference}
-use exercise
+//// @hidden
 
-const arbitrary_utxo = OutputReference("", 0)
+use aiken/builtin
+use cardano/transaction
+use exercise
+use test_kit.{to_data}
+use test_kit/fuzzy/fuzzer.{FromKey, Fuzzed, credential_fuzzer, policy_id_fuzzer}
+use test_kit/tx/mock.{mock_output_reference}
+
+const arbitrary_utxo = mock_output_reference(#"abcd", 0)
 
 /// Fix me in as many ways as possible, at least 2 ways
-test validator_test_1() {
-  !exercise.validate.mint(24, "", transaction.placeholder)
+test validator_test_1(policy_id via policy_id_fuzzer()) {
+  !exercise.validate.mint(24, policy_id, transaction.placeholder)
 }
 
 /// Fix me in as many ways as possible, at least 2 ways
@@ -21,11 +25,9 @@ test validator_test_2() {
 }
 
 /// Modify the VALIDATOR logic!
-test validator_test_3() {
-  let arbitrary_datum: Data = "VerificationKeyHash" |> VerificationKey
-
+test validator_test_3(arbitrary_key via credential_fuzzer(FromKey(Fuzzed))) {
   exercise.validate.spend(
-    datum: Some(arbitrary_datum),
+    datum: Some(arbitrary_key |> to_data),
     redeemer: Void,
     utxo: arbitrary_utxo,
     tx: transaction.placeholder,

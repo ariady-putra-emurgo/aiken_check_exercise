@@ -1,3 +1,4 @@
+use cardano/address.{Credential, VerificationKey}
 use cardano/assets.{PolicyId}
 use cardano/transaction.{OutputReference, Transaction}
 

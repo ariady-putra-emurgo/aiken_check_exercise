@@ -1,3 +1,5 @@
+//// @hidden
+
 use modules/functions
 
 /// Fix me in as many ways as possible, at least 2 ways
